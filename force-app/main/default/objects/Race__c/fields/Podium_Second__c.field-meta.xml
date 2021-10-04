@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Podium_Second__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Podium Second</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Podium Second</inlineHelpText>
+    <label>Podium Second</label>
+    <referenceTo>Driver__c</referenceTo>
+    <relationshipLabel>Races (Podium Second)</relationshipLabel>
+    <relationshipName>Races1</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

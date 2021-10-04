@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>no_winner_duplicates</fullName>
+    <active>true</active>
+    <description>Race record can&apos;t have duplicate value in Winner__c, Podium_Second__c and Podium_Third__c fields.</description>
+    <errorConditionFormula>IF(
+    AND(ISBLANK(Winner__c),
+       ISBLANK(Podium_Second__c),
+       ISBLANK(Podium_Third__c)
+    ),
+    FALSE,
+    OR(Winner__c == Podium_Second__c,
+       Winner__c == Podium_Third__c,
+       Podium_Second__c == Podium_Third__c)
+)</errorConditionFormula>
+    <errorMessage>Driver can not be a hold more than 1 position in podium.</errorMessage>
+</ValidationRule>

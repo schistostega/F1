@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Grand_Prix__c</fullName>
+    <description>Participated Race</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Participated Race</inlineHelpText>
+    <label>Grand Prix</label>
+    <referenceTo>Race__c</referenceTo>
+    <relationshipLabel>Race Results</relationshipLabel>
+    <relationshipName>Race_Results</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

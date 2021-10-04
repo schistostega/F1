@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>driver_18_age_only</fullName>
+    <active>true</active>
+    <description>No drivers aged below 18 are allowed for race.</description>
+    <errorConditionFormula>Age__c &lt; 18</errorConditionFormula>
+    <errorDisplayField>Age__c</errorDisplayField>
+    <errorMessage>No drivers aged below 18 are allowed for race.</errorMessage>
+</ValidationRule>
