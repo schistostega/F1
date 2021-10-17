@@ -16,7 +16,6 @@ public with sharing class FormulaOneServices {
     }
 
     public static void createDriver(String firstName, String lastName, Integer age) {
-        // Create insert driver record, based on input parameters
         Driver__c driver = new Driver__c();
         driver.First_Name__c = firstName;
         driver.Last_Name__c = lastName;
@@ -26,7 +25,6 @@ public with sharing class FormulaOneServices {
     }
 
     public static void createDrivers(List<DriverDTO> driversDTO) {
-        // Create and insert list of driver records, based on input parameters
         Driver__c[] drivers = new List<Driver__c>();
 
         for (DriverDTO dto: driversDTO) {
@@ -37,12 +35,17 @@ public with sharing class FormulaOneServices {
             drivers.add(driver);
         }
 
-        insert drivers;
+        if (!drivers.isEmpty()) {
+            insert drivers;
+        }
     }
 
     public static Driver__c updateDriverName(Id driverId, String firstName, String lastName) {
-        // Update driver`s name based on input parameters
-        Driver__c driver = [SELECT Id, First_Name__c, Last_Name__c FROM Driver__c WHERE Id = :driverId limit 1];
+        if (driverId == null) {
+            throw new IllegalArgumentException('driverId must not be Null');
+        }
+
+        Driver__c driver = [SELECT Id, First_Name__c, Last_Name__c FROM Driver__c WHERE Id = :driverId LIMIT 1];
         driver.First_Name__c = firstName;
         driver.Last_Name__c = lastName;
 
@@ -51,8 +54,6 @@ public with sharing class FormulaOneServices {
     }
 
     public static Race__c[] updateGrandPrixWinners(Set<Id> raceIds) {
-        // Get Race__c records based by input params and update Winner__c, Podium_Second__c and Podium_Third__c fields 
-        // depending on Position__c field of related Race_Result__c objects
         Race_Result__c[] results = [
             SELECT Grand_Prix__r.Winner__c, Grand_Prix__r.Podium_Second__c, Grand_Prix__r.Podium_Third__c, Position__c, Racer__c
             FROM Race_Result__c
