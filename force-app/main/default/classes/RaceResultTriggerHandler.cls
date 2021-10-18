@@ -32,13 +32,13 @@ public class RaceResultTriggerHandler {
                 if (resultNew.Position__c == result.Position__c && resultNew.Id != result.Id) {
                     String message = 'Duplicaton detected! Position ' + result.Position__c.format() + 
                                     ' in race ' + result.Grand_Prix__r.Name + ' already exists.';
-                    resultNew.addError(message);
+                    resultNew.Position__c.addError(message);
                 }
 
                 if (resultNew.Racer__c == result.Racer__c && resultNew.Id != result.Id) {
                     String message = 'Duplicaton detected! Racer ' + result.Racer__r.Full_Name__c + 
                                     ' in race ' + result.Grand_Prix__r.Name + ' already exists.';
-                    resultNew.addError(message);
+                    resultNew.Racer__c.addError(message);
                 }
             }
         }
