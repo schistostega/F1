@@ -12,6 +12,10 @@ public class RaceResultTriggerHandler {
             WHERE Grand_Prix__c IN :raceIds
         ];
 
+        if (results.isEmpty()) {
+            results = resultsNew;
+        }
+
         Map<Id, List<Race_Result__c>> resultsPerRace = new Map<Id, List<Race_Result__c>>();
         for (Race_Result__c result: results) {
             if (resultsPerRace.containsKey(result.Grand_Prix__c)) {
