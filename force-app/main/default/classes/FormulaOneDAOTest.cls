@@ -35,6 +35,7 @@ private class FormulaOneDAOTest {
 
         Test.startTest();
         FormulaOneDAO dao = new FormulaOneDAO();
+        // Racer__c field is obligatory, do not remove it. This filed will be queried in subquery above anyway.
         Race_Result__c[] results = dao.getRaceResults(driver.id, new List<String>{
             'Name', 'Grand_Prix__c', 'Position__c', 'Is_Fastest_Lap__c', 'Racer__c'
         });

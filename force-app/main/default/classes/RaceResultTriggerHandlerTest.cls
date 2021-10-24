@@ -8,31 +8,57 @@ private class RaceResultTriggerHandlerTest {
     @isTest
     static void checkPositionAndDriverPostionDuplicityNegativeTest() {
         Race__c race = [
-            SELECT Id, Name, (SELECT Position__c FROM Race_Results__r ORDER BY Position__c LIMIT 2)
+            SELECT Id, Name, (SELECT Position__c FROM Race_Results__r ORDER BY Position__c LIMIT 4)
             FROM Race__c 
             LIMIT 1
         ];
-        Race_Result__c resultToInsert = new Race_Result__c(
-            Name = 'Test Result',
-            Position__c = 1, // already exists
-            Grand_Prix__c = race.Id
-        );
-        Race_Result__c resultToUpdate = race.Race_Results__r.get(1);
-        resultToUpdate.Position__c = 1;
+
+        Race_Result__c[] resultsToInsert = new List<Race_Result__c>();
+        for (Integer i = 0; i < 5; i++) {
+            resultsToInsert.add(new Race_Result__c(
+                Name = 'Test Result ' + i,
+                Position__c = 1, // already exists in test setup
+                Grand_Prix__c = race.Id
+            ));
+        }
+        
+        Race_Result__c[] resultsToUpdate = new List<Race_Result__c>();
+        for (Race_Result__c result : race.Race_Results__r) {
+            // result with original position 1 will be successfully updated
+            if (result.Position__c != 1) {
+                result.Position__c = 1;
+                resultsToUpdate.add(result);
+            }
+        }
+
+        Race_Result__c[] resultsToUpsert = new List<Race_Result__c>();
+        resultsToUpsert.addAll(resultsToInsert);
+        resultsToUpsert.addAll(resultsToUpdate);
 
         Test.startTest();
-        Database.SaveResult saveResult = Database.insert(resultToInsert, false);
-        Database.SaveResult updateResult = Database.update(resultToUpdate, false);
+        Database.SaveResult[] saveResult = Database.insert(resultsToInsert, false);
+        Database.SaveResult[] updateResult = Database.update(resultsToUpdate, false);
+        Database.UpsertResult[] upsertResult = Database.upsert(resultsToUpsert, false);
         Test.stopTest();
 
-        System.assert(!saveResult.isSuccess());
-        System.assert(!updateResult.isSuccess());
-        System.assert(saveResult.getErrors().size() > 0);
-        System.assert(updateResult.getErrors().size() > 0);
-
         String errMessage = 'Duplicaton detected! Position 1 in race ' + race.Name + ' already exists.';
-        System.assertEquals(errMessage, saveResult.getErrors()[0].getMessage());
-        System.assertEquals(errMessage, updateResult.getErrors()[0].getMessage());
+        for (Database.SaveResult dbResult : saveResult) {
+            System.assertEquals(false, dbResult.isSuccess());
+            System.assert(dbResult.getErrors().size() > 0);
+            System.assertEquals(errMessage, dbResult.getErrors()[0].getMessage());
+        }
+
+        for (Database.SaveResult dbResult : updateResult) {
+            System.assertEquals(false, dbResult.isSuccess());
+            System.assert(dbResult.getErrors().size() > 0);
+            System.assertEquals(errMessage, dbResult.getErrors()[0].getMessage());
+        }
+
+        for (Database.UpsertResult dbResult : upsertResult) {
+            System.assertEquals(false, dbResult.isSuccess());
+            System.assert(dbResult.getErrors().size() > 0);
+            System.assertEquals(errMessage, dbResult.getErrors()[0].getMessage());
+        }
     }
 
     @isTest

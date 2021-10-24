@@ -6,7 +6,8 @@ public with sharing class FormulaOneServices {
             values.add(value);
         }
 
-        return values.toString().replace(', ', separator);
+        String key = values.toString().replace(', ', separator);
+        return key.substring(1, key.length() - 1); // strip '(' and ')'
     }
 
     public static Boolean isHatTrick(Race_Result__c raceResult) {

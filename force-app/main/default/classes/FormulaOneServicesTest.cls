@@ -18,20 +18,24 @@ private class FormulaOneServicesTest {
             fields.add(mfields.get(fieldName));
         }
         
-        Driver__c driver = Database.query(
-            'SELECT ' + String.join(fieldNames, ', ')
-            + ' FROM Driver__c LIMIT 1'
+        Driver__c driver = new Driver__c(
+            First_Name__c = 'tester',
+            Last_Name__c = 'toster',
+            Age__c = 48
         );
+        insert driver;
+        
+        Driver__c record = [
+            SELECT Id, First_Name__c, Last_Name__c, Full_Name__c, Age__c
+            FROM Driver__c
+            WHERE Id = :driver.Id
+        ];
 
-        List<Object> testValues = new List<Object>();
-        for (SObjectField field: fields) {
-            Object value = driver.get(field);
-            testValues.add(value);
-        }
-        String testKey = testValues.toString();
+        
+        String testKey = driver.Id + '||tester||toster||tester toster||48';
 
         Test.startTest();
-        String key = FormulaOneServices.generateKey(driver, fields, ', ');
+        String key = FormulaOneServices.generateKey(record, fields, '||');
         Test.stopTest();
 
         System.assertEquals(testKey, key, 'Wrong key has been received.');
@@ -128,25 +132,21 @@ private class FormulaOneServicesTest {
 
     @isTest
     static void updateGrandPrixWinnersTest() {
-        Race__c[] races = [
+        Map<Id, Race__c> races = new Map<Id, Race__c>([
             SELECT Id, (SELECT Racer__r.Id, Position__c 
                         FROM Race_Results__r
                         ORDER BY Position__c
                         LIMIT 3) 
             FROM Race__c 
             LIMIT 2
-        ];
-        Set<Id> raceIds = new Set<Id>();
-        for (Race__c race: races) {
-            raceIds.add(race.Id);
-        }
+        ]);
 
         Test.startTest();
-        Race__c[] updatedRaces = FormulaOneServices.updateGrandPrixWinners(raceIds);
+        Race__c[] updatedRaces = FormulaOneServices.updateGrandPrixWinners(races.keySet());
         Test.stopTest();
 
         Set<Id> checkedIds = new Set<Id>();
-        for (Race__c race: races) {
+        for (Race__c race: races.values()) {
             for (Race__c updatedRace: updatedRaces) {
                 if (race.Id == updatedRace.Id) {
                     checkedIds.add(race.Id);
@@ -157,6 +157,6 @@ private class FormulaOneServicesTest {
             }
         }
 
-        System.assert(checkedIds.equals(raceIds));
+        System.assert(checkedIds.equals(races.keySet()));
     }
 }
