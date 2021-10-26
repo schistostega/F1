@@ -1,45 +1,58 @@
 <aura:component controller="DriverRatingServerController" implements="flexipage:availableForAllPageTypes">
     <aura:attribute name="drivers" type="Driver__c[]"/>
+    <aura:attribute name="isError" type="Boolean"/>
     
     <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
 	
     <div class="slds-box slds-theme_default">
-        <h2 id="table-label" class="slds-text-heading_medium slds-m-bottom_xx-small slds-align_absolute-center">Top-5 drivers rating</h2>
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
-            <thead>
-                <tr class="slds-line-height_reset">
-                    <th scope="col">
-                        <div class="slds-truncate">Driver</div>
-                    </th>
-                    <th>
-                        <div class="slds-truncate">Hat Tricks</div>
-                    </th>
-                    <th>
-                        <div class="slds-truncate">Age</div>
-                    </th>
-                    <th>
-                        <div class="slds-truncate">Is Qualified</div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <aura:iteration items="{! v.drivers }" var="item">
-                    <tr>
-                        <th scope="row">
-                            <div class="slds-truncate">{! item.Full_Name__c }</div>
-                        </th>
-                        <th scope="row">
-                            <div class="slds-truncate">{! item.Hat_Tricks__c }</div>
-                        </th>
-                        <th scope="row">
-                            <div class="slds-truncate">{! item.Age__c }</div>
-                        </th>
-                        <th scope="row">
-                            <div class="slds-truncate">{! item.Is_Qualified__c }</div>
-                        </th>
-                    </tr>
-                </aura:iteration>
-            </tbody>
-        </table>
+        <aura:if isTrue="{!v.isError}">
+
+            <h2 id="table-label" class="slds-text-heading_medium slds-text-color_destructive slds-align_absolute-center">
+                Sorry, error has been occured. Try to reload page. If error still remain, contact your administrator.
+            </h2>
+
+            <aura:set attribute="else">
+                <h2 id="table-label" class="slds-text-heading_medium slds-m-bottom_xx-small slds-align_absolute-center">Top-5 drivers rating</h2>
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th scope="col">
+                                <div class="slds-truncate">Driver</div>
+                            </th>
+                            <th>
+                                <div class="slds-truncate">Hat Tricks</div>
+                            </th>
+                            <th>
+                                <div class="slds-truncate">Age</div>
+                            </th>
+                            <th>
+                                <div class="slds-truncate">Is Qualified</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{! v.drivers }" var="item">
+                            <tr>
+                                <th scope="row">
+                                    <div class="slds-truncate">
+                                        <a href="{! item.url }">{! item.Full_Name__c }</a>
+                                    </div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate">{! item.Hat_Tricks__c }</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate">{! item.Age__c }</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate">{! item.Is_Qualified__c }</div>
+                                </th>
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+        </aura:set>
+
+        </aura:if>
 	</div>
 </aura:component>
