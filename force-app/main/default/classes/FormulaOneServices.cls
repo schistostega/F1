@@ -78,4 +78,14 @@ public with sharing class FormulaOneServices {
         update races.values();
         return races.values();
     }
+
+    @AuraEnabled
+    public static Race_Result__c[] getWinsOfDriver(Id driverId) {
+        return [
+            SELECT Id, Name, Position__c, Is_Fastest_Lap__c, Grand_Prix__r.Id, Grand_Prix__r.Name
+            FROM Race_Result__c 
+            WHERE Racer__c = :driverId AND Position__c = 1
+            LIMIT 10
+        ];
+    }
 }
