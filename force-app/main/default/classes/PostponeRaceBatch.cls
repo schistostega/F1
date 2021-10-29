@@ -1,8 +1,8 @@
 public class PostponeRaceBatch implements Database.Batchable<sObject>, Database.AllowsCallouts {
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        return Database.getQueryLocator(
-            'SELECT Date__c FROM Race__c WHERE Status__c = \'Active\''
-        );
+        return Database.getQueryLocator([
+            SELECT Date__c FROM Race__c WHERE Status__c = 'Active'
+        ]);
     }
 
     public void execute(Database.BatchableContext cd, List<Race__c> scope) {
@@ -15,7 +15,7 @@ public class PostponeRaceBatch implements Database.Batchable<sObject>, Database.
 
     public void finish(Database.BatchableContext bc) {
         AsyncApexJob job = [
-            SELECT Id, Status, NumberOfErrors, JobItemsProcessed, TotalJobItems, CreatedBy.Email
+            SELECT Id, ExtendedStatus, NumberOfErrors, JobItemsProcessed, TotalJobItems, CreatedBy.Email
             FROM AsyncApexJob
             WHERE Id = :bc.getJobId()
         ];
