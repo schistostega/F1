@@ -88,4 +88,23 @@ public with sharing class FormulaOneServices {
             LIMIT 10
         ];
     }
+
+    @AuraEnabled
+    public static String getWeatherOnTrack(Id raceId) {
+        Race__c race = [SELECT Track__c FROM Race__c WHERE Id = :raceId];
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('https://avenga-school.herokuapp.com/weather');
+        req.setMethod('GET');
+        req.setHeader('trackName', race.Track__c);
+
+        HttpResponse resp = new Http().send(req);
+
+        if (resp.getStatusCode() == 200) {
+            return resp.getBody();
+        } else {
+            return '{"status":"Network Error", "statusCode":502, "message": "Network error occurred. Try again later."}';
+        }
+        
+    }
 }
