@@ -101,7 +101,11 @@ public with sharing class FormulaOneServices {
         HttpResponse resp = new Http().send(req);
 
         if (resp.getStatusCode() == 200) {
-            return resp.getBody();
+            Map<String, Object> m = (Map<String, Object>)JSON.deserializeUntyped(resp.getBody());
+            m.put('status', 'OK');
+            m.put('statusCode', 200);
+
+            return JSON.serialize(m);
         } else {
             return '{"status":"Network Error", "statusCode":502, "message": "Network error occurred. Try again later."}';
         }
